@@ -1,0 +1,20 @@
+# Logs
+logs/
+*.log
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# User-specific files
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# VS Code settings (optional - users may want to customize)
+# .vscode/
+
+# Temporary files
+*.tmp
+*.temp
