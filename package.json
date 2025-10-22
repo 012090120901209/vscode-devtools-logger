@@ -1,0 +1,36 @@
+{
+  "name": "vscode-devtools-logger",
+  "version": "1.0.0",
+  "description": "Capture and log VS Code Developer Tools Console output to timestamped log files. Cross-platform debugging tool for VS Code extension developers.",
+  "keywords": [
+    "vscode",
+    "vscode-extension",
+    "developer-tools",
+    "devtools",
+    "logging",
+    "debugging",
+    "console",
+    "console-logging",
+    "electron",
+    "electron-logging",
+    "extension-development",
+    "powershell",
+    "bash",
+    "cross-platform",
+    "windows",
+    "macos",
+    "linux",
+    "monitor",
+    "log-capture"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ilan4ever/vscode-devtools-logger.git"
+  },
+  "author": "ilan4ever",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ilan4ever/vscode-devtools-logger/issues"
+  },
+  "homepage": "https://github.com/ilan4ever/vscode-devtools-logger#readme"
+}
