@@ -2,7 +2,7 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Capture DevTools Console",
+      "label": "Capture DevTools Console (Windows)",
       "type": "process",
       "command": "cmd.exe",
       "args": [
@@ -13,6 +13,26 @@
         "kind": "build",
         "isDefault": true
       },
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": {
+        "echo": false,
+        "reveal": "always",
+        "focus": false,
+        "panel": "new"
+      },
+      "options": {
+        "cwd": "${workspaceFolder}"
+      }
+    },
+    {
+      "label": "Capture DevTools Console (macOS/Linux)",
+      "type": "shell",
+      "command": "bash",
+      "args": [
+        "${workspaceFolder}/.vscode/capture-devtools.sh"
+      ],
+      "group": "build",
       "isBackground": true,
       "problemMatcher": [],
       "presentation": {

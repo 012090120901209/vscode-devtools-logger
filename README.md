@@ -1,6 +1,6 @@
 # VS Code DevTools Logger
 
-A simple, powerful tool to capture and log all VS Code Developer Tools Console output to a file. Perfect for debugging VS Code extensions, tracking console messages, and monitoring extension behavior in production environments.
+A simple, powerful, **cross-platform** tool to capture and log all VS Code Developer Tools Console output to a file. Perfect for debugging VS Code extensions, tracking console messages, and monitoring extension behavior in production environments.
 
 ## 🎯 What It Does
 
@@ -8,19 +8,25 @@ VS Code extensions log messages to the Developer Tools Console (accessible via `
 
 ### Key Features
 
+- ✅ **Cross-platform** - Works on Windows, macOS, and Linux
 - ✅ **Real-time monitoring** - Captures all DevTools Console output as it happens
 - ✅ **Timestamped logs** - Each log entry includes precise timestamp (`HH:MM:SS YYYY-MM-DD`)
 - ✅ **Color-coded terminal output** - Errors in red, warnings in yellow
 - ✅ **Persistent logging** - Saved to file for later analysis
-- ✅ **Zero dependencies** - Uses only PowerShell (built into Windows)
+- ✅ **Zero dependencies** - Uses only built-in shell scripts (PowerShell/Bash)
 - ✅ **Works with all extensions** - Captures output from any VS Code extension
 - ✅ **Integrated VS Code task** - Run with a single keyboard shortcut
 
 ## 📋 Prerequisites
 
-- **Windows** (uses PowerShell and Electron logging)
-- **VS Code** (any recent version)
+### Windows
 - **PowerShell** (included with Windows)
+
+### macOS / Linux  
+- **Bash** (pre-installed on most systems)
+
+### All Platforms
+- **VS Code** (any recent version)
 
 ## 🚀 Quick Start
 
@@ -31,174 +37,78 @@ Copy these files into your VS Code workspace:
 ```
 your-workspace/
 ├── .vscode/
-│   ├── tasks.json              # VS Code task configuration
-│   ├── capture-devtools.ps1    # Main monitoring script
-│   └── run-capture.bat         # Launcher script
-└── logs/                        # Output directory (auto-created)
+│   ├── tasks.json                    # VS Code task configuration (all platforms)
+│   ├── capture-devtools.ps1          # PowerShell script (Windows)
+│   ├── run-capture.bat               # Batch launcher (Windows)
+│   └── capture-devtools.sh           # Bash script (macOS/Linux)
+└── logs/                              # Output directory (auto-created)
 ```
 
 ### 2. Launch VS Code with Electron Logging
 
-Close VS Code completely, then launch it from PowerShell with:
-
+#### Windows (PowerShell)
 ```powershell
 $env:ELECTRON_ENABLE_LOGGING = "true"
 code .
 ```
 
-Or create a shortcut/launcher script that does this automatically.
+#### macOS / Linux (Bash/Zsh)
+```bash
+export ELECTRON_ENABLE_LOGGING=1
+code .
+```
 
-### 3. Start Capturing
+**Tip:** Create a launcher script so you don't have to type this every time!
+
+### 3. Make Bash Script Executable (macOS/Linux only)
+
+```bash
+chmod +x .vscode/capture-devtools.sh
+```
+
+### 4. Start Capturing
 
 In VS Code:
-- Press `Ctrl+Shift+B` (default build task)
-- Or press `Ctrl+Shift+P` → type "Run Task" → select "Capture DevTools Console"
+- Press `Ctrl+Shift+P` (or `Cmd+Shift+P` on macOS)
+- Type "Run Task"
+- Select:
+  - **Windows:** "Capture DevTools Console (Windows)"
+  - **macOS/Linux:** "Capture DevTools Console (macOS/Linux)"
 
-### 4. View the Output
+### 5. View the Output
 
 - **Live output**: Watch in the VS Code terminal (color-coded)
 - **Saved log**: Check `logs/console_capture.log` in your workspace
 
-## 📁 File Contents
+## 📁 Platform-Specific Details
 
-### `.vscode/tasks.json`
+### Windows
 
-```json
-{
-  "version": "2.0.0",
-  "tasks": [
-    {
-      "label": "Capture DevTools Console",
-      "type": "process",
-      "command": "cmd.exe",
-      "args": [
-        "/c",
-        "${workspaceFolder}\\.vscode\\run-capture.bat"
-      ],
-      "group": {
-        "kind": "build",
-        "isDefault": true
-      },
-      "isBackground": true,
-      "problemMatcher": [],
-      "presentation": {
-        "echo": false,
-        "reveal": "always",
-        "focus": false,
-        "panel": "new"
-      },
-      "options": {
-        "cwd": "${workspaceFolder}"
-      }
-    }
-  ]
-}
-```
+**DevTools Log Location:** `C:\logs\vscode-devtools.log`
 
-### `.vscode/run-capture.bat`
+**Scripts Used:**
+- `.vscode/capture-devtools.ps1` - PowerShell monitoring script
+- `.vscode/run-capture.bat` - Batch file launcher
 
-```batch
-@echo off
-powershell.exe -NoProfile -NoLogo -ExecutionPolicy Bypass -File "%~dp0capture-devtools.ps1"
-```
+**Task:** "Capture DevTools Console (Windows)"
 
-### `.vscode/capture-devtools.ps1`
+### macOS
 
-```powershell
-# Monitor VS Code DevTools Console Log
-$devToolsLog = 'C:\logs\vscode-devtools.log'
-$outputFile = Join-Path $PSScriptRoot '..\logs\console_capture.log'
+**DevTools Log Location:** `~/Library/Logs/Code/vscode-devtools.log`
 
-# Create logs directory if it doesn't exist
-$logsDir = Join-Path $PSScriptRoot '..\logs'
-if (!(Test-Path $logsDir)) {
-    New-Item -ItemType Directory -Path $logsDir | Out-Null
-}
+**Scripts Used:**
+- `.vscode/capture-devtools.sh` - Bash monitoring script
 
-# Clear previous output
-if (Test-Path $outputFile) {
-    Clear-Content $outputFile
-}
+**Task:** "Capture DevTools Console (macOS/Linux)"
 
-Write-Host 'Monitoring DevTools Console...' -ForegroundColor Green
-Write-Host "Source: $devToolsLog" -ForegroundColor Gray
-Write-Host "Output: $outputFile" -ForegroundColor Gray
-Write-Host 'Press Ctrl+C to stop' -ForegroundColor Yellow
-Write-Host ''
+### Linux
 
-# Check if DevTools log exists
-if (!(Test-Path $devToolsLog)) {
-    Write-Host 'ERROR: DevTools log not found!' -ForegroundColor Red
-    Write-Host 'VS Code must be launched with Electron logging enabled.' -ForegroundColor Red
-    Write-Host ''
-    Write-Host 'Close VS Code and run this from PowerShell:' -ForegroundColor Yellow
-    Write-Host '  $env:ELECTRON_ENABLE_LOGGING = "true"' -ForegroundColor White
-    Write-Host '  code .' -ForegroundColor White
-    Write-Host ''
-    Write-Host 'Then reopen VS Code and run this task again.' -ForegroundColor Yellow
-    Start-Sleep -Seconds 5
-    exit 1
-}
+**DevTools Log Location:** `~/.config/Code/logs/vscode-devtools.log`
 
-# Monitor the log file
-$lastPosition = 0
+**Scripts Used:**
+- `.vscode/capture-devtools.sh` - Bash monitoring script
 
-while ($true) {
-    if (Test-Path $devToolsLog) {
-        $file = Get-Item $devToolsLog
-        $currentSize = $file.Length
-        
-        if ($currentSize -gt $lastPosition) {
-            # Read only new content
-            $stream = [System.IO.File]::Open($devToolsLog, 'Open', 'Read', 'ReadWrite')
-            $stream.Position = $lastPosition
-            $reader = New-Object System.IO.StreamReader($stream)
-            $newContent = $reader.ReadToEnd()
-            $reader.Close()
-            $stream.Close()
-            
-            if ($newContent) {
-                $lines = $newContent -split "`r?`n" | Where-Object { $_.Trim() -ne '' }
-                
-                foreach ($line in $lines) {
-                    $timestamp = Get-Date -Format 'HH:mm:ss yyyy-MM-dd'
-                    
-                    # Color code based on content
-                    if ($line -match '\[Extension Host\]' -or $line -match '@continuedev' -or $line -match 'error|Error|ERROR') {
-                        $output = "[$timestamp] [DEVTOOLS] $line"
-                        Write-Host $output -ForegroundColor Red
-                    }
-                    elseif ($line -match 'warning|Warning|WARN') {
-                        $output = "[$timestamp] [DEVTOOLS] $line"
-                        Write-Host $output -ForegroundColor Yellow
-                    }
-                    else {
-                        $output = "[$timestamp] [DEVTOOLS] $line"
-                        Write-Host $output
-                    }
-                    
-                    # Write to file
-                    Add-Content -Path $outputFile -Value $output
-                }
-            }
-            
-            $lastPosition = $currentSize
-        }
-    }
-    
-    Start-Sleep -Milliseconds 500
-}
-```
-
-## 🔧 How It Works
-
-1. **Electron Logging**: When you launch VS Code with `ELECTRON_ENABLE_LOGGING=true`, Electron (the framework VS Code is built on) writes all renderer console output to `C:\logs\vscode-devtools.log`
-
-2. **File Monitoring**: The PowerShell script continuously monitors this log file, reading only new content as it's written
-
-3. **Formatting**: Each line is timestamped and formatted for readability
-
-4. **Dual Output**: Messages are displayed in the VS Code terminal (with colors) and saved to `logs/console_capture.log`
+**Task:** "Capture DevTools Console (macOS/Linux)"
 
 ## 📊 Example Output
 
@@ -223,34 +133,34 @@ Track timing messages, warnings, and errors over extended periods.
 ### CI/CD Integration
 Run as part of automated testing to capture all console output.
 
-## 💡 Tips
+## 💡 Tips & Tricks
 
-### Make It Easier - Create a Launch Script
+### Create a Launcher Script
 
-Create `launch-vscode-with-logging.ps1` in your workspace:
-
+#### Windows (`launch-vscode-logging.ps1`)
 ```powershell
+#!/usr/bin/env pwsh
 $env:ELECTRON_ENABLE_LOGGING = "true"
 code .
 ```
 
-Then just run this script instead of typing the command each time.
+#### macOS/Linux (`launch-vscode-logging.sh`)
+```bash
+#!/bin/bash
+export ELECTRON_ENABLE_LOGGING=1
+code .
+```
 
-### Auto-start on VS Code Launch
-
-Add this to your workspace's `.vscode/settings.json`:
-
-```json
-{
-  "tasks.autoRun": "on",
-  "tasks.runInTerminal": true
-}
+Don't forget to make it executable on Unix systems:
+```bash
+chmod +x launch-vscode-logging.sh
 ```
 
 ### Filter Specific Extensions
 
-Modify the PowerShell script to filter for specific patterns:
+Modify the monitoring script to filter for specific patterns.
 
+**Windows (PowerShell) - Edit `.vscode/capture-devtools.ps1`:**
 ```powershell
 if ($line -match 'your-extension-name') {
     # Only log lines matching your extension
@@ -260,68 +170,129 @@ if ($line -match 'your-extension-name') {
 }
 ```
 
+**macOS/Linux (Bash) - Edit `.vscode/capture-devtools.sh`:**
+```bash
+if echo "$line" | grep -q 'your-extension-name'; then
+    # Only log lines matching your extension
+    echo -e "\033[0;36m$OUTPUT\033[0m"  # Cyan
+    echo "$OUTPUT" >> "$OUTPUT_FILE"
+fi
+```
+
 ## 🐛 Troubleshooting
 
 ### "ERROR: DevTools log not found!"
 
 **Cause**: VS Code wasn't launched with Electron logging enabled.
 
-**Solution**: Close VS Code completely and launch with:
-```powershell
-$env:ELECTRON_ENABLE_LOGGING = "true"
-code .
+**Solution**: Close VS Code completely and launch with the appropriate command for your OS (see step 2 above).
+
+### Task not found (macOS/Linux)
+
+**Cause**: Bash script isn't executable.
+
+**Solution**: 
+```bash
+chmod +x .vscode/capture-devtools.sh
 ```
 
-### Task shows Conda errors
+### Permission denied (macOS/Linux)
 
-**Cause**: Conda PowerShell integration interfering with task execution.
+**Cause**: Script doesn't have execute permissions or wrong line endings.
 
-**Solution**: The batch file wrapper should bypass this. If issues persist, the task is configured to use `cmd.exe` directly which avoids PowerShell environments.
+**Solution**:
+```bash
+chmod +x .vscode/capture-devtools.sh
+# Fix line endings if needed
+dos2unix .vscode/capture-devtools.sh  # or use sed
+```
 
 ### Log file is empty
 
 **Cause**: Monitoring started before any console output was generated.
 
-**Solution**: Trigger the action that generates console output (e.g., reload window, activate extension).
+**Solution**: Trigger the action that generates console output (e.g., reload window, activate extension, use extension features).
 
 ### Log file grows too large
 
 **Solution**: The script clears the log file each time it starts. You can also manually clear it:
+
+**Windows:**
 ```powershell
 Clear-Content .\logs\console_capture.log
 ```
 
+**macOS/Linux:**
+```bash
+> logs/console_capture.log
+```
+
 ## 🔐 Security Note
 
-The Electron DevTools log at `C:\logs\vscode-devtools.log` may contain sensitive information from all extensions. Be cautious when sharing log files.
+The Electron DevTools log may contain sensitive information from all extensions. Be cautious when sharing log files.
 
 ## 📝 Customization
 
 ### Change Log Location
 
-Edit `capture-devtools.ps1` and modify:
+**Windows** - Edit `capture-devtools.ps1`:
 ```powershell
 $outputFile = Join-Path $PSScriptRoot '..\logs\console_capture.log'
 ```
 
+**macOS/Linux** - Edit `capture-devtools.sh`:
+```bash
+OUTPUT_FILE="$SCRIPT_DIR/../logs/console_capture.log"
+```
+
 ### Change Timestamp Format
 
-Modify the timestamp line:
+**Windows:**
 ```powershell
 $timestamp = Get-Date -Format 'yyyy-MM-dd HH:mm:ss.fff'  # Include milliseconds
 ```
 
+**macOS/Linux:**
+```bash
+TIMESTAMP=$(date '+%Y-%m-%d %H:%M:%S.%3N')  # Include milliseconds
+```
+
 ### Add Log Rotation
 
-Append to filename instead of clearing:
+Append timestamp to filename instead of clearing:
+
+**Windows:**
 ```powershell
 $timestamp = Get-Date -Format 'yyyy-MM-dd_HH-mm'
 $outputFile = Join-Path $PSScriptRoot "..\logs\console_capture_$timestamp.log"
 ```
 
+**macOS/Linux:**
+```bash
+TIMESTAMP=$(date '+%Y-%m-%d_%H-%M')
+OUTPUT_FILE="$SCRIPT_DIR/../logs/console_capture_$TIMESTAMP.log"
+```
+
+## 🏗️ How It Works
+
+1. **Electron Logging**: When you launch VS Code with `ELECTRON_ENABLE_LOGGING=true` (or `=1`), Electron (the framework VS Code is built on) writes all renderer console output to a platform-specific log file
+
+2. **File Monitoring**: The monitoring script continuously watches this log file, reading only new content as it's written
+
+3. **Formatting**: Each line is timestamped and formatted for readability
+
+4. **Dual Output**: Messages are displayed in the VS Code terminal (with colors) and saved to `logs/console_capture.log`
+
 ## 🤝 Contributing
 
 Found a bug or have a feature request? Please open an issue or submit a pull request!
+
+### Ideas for Contributions
+- Support for other shells (Fish, Zsh-specific features)
+- Automatic log rotation
+- Log filtering UI
+- Remote log shipping
+- VS Code extension wrapper
 
 ## 📄 License
 
@@ -335,4 +306,4 @@ If this tool helped you, please star the repository to help others find it!
 
 **Created by developers, for developers** 🚀
 
-*Happy debugging!*
+*Happy debugging on all platforms!*
