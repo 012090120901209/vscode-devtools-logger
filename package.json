@@ -27,7 +27,7 @@
     "type": "git",
     "url": "https://github.com/ilan4ever/vscode-devtools-logger.git"
   },
-  "author": "ilan4ever",
+  "author": "Ilan Aviv <https://github.com/ilan4ever>",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/ilan4ever/vscode-devtools-logger/issues"

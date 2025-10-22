@@ -367,6 +367,16 @@ Found a bug or have a feature request? Please open an issue or submit a pull req
 
 MIT License - feel free to use in your projects!
 
+## 👨‍💻 Author
+
+**Created by [Ilan Aviv](https://github.com/ilan4ever)**
+
+Built with ❤️ to solve the copy-paste debugging problem. If this tool helps your AI-assisted development workflow, consider:
+- ⭐ Starring the repository
+- 🐛 Reporting bugs or suggesting features
+- 🤝 Contributing improvements
+- 📢 Sharing with other developers
+
 ## 🌟 Star This Repo
 
 If this tool helped you, please star the repository to help others find it!

@@ -113,4 +113,6 @@ _P.S. This is my first open-source tool - be gentle! 😊 But honest feedback is
 
 **Happy AI-assisted debugging! 🤖✨**
 
+**Created by [Ilan Aviv](https://github.com/ilan4ever)** | MIT License
+
 #vscode #ai #debugging #developer-tools #chatgpt #copilot #devtools

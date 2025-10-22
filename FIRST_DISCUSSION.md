@@ -108,6 +108,8 @@ _P.S. If this tool saved you time, a ⭐ star would mean the world! It helps oth
 
 **Happy coding (with AI assistance)! 🤖✨**
 
+**Created by [Ilan Aviv](https://github.com/ilan4ever)** | MIT License
+
 ---
 
 ### Quick Links:
