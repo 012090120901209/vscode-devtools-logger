@@ -2,6 +2,41 @@
 
 A simple, powerful, **cross-platform** tool to capture and log all VS Code Developer Tools Console output to a file. Perfect for debugging VS Code extensions, tracking console messages, and monitoring extension behavior in production environments.
 
+## 🚀 Super Quick Start (For Beginners)
+
+**Just want to get started fast? Follow these 3 simple steps:**
+
+### Step 1: Download the Files
+1. Click the green **"Code"** button at the top of this page
+2. Select **"Download ZIP"**
+3. Extract the ZIP file to your VS Code workspace folder
+
+### Step 2: Launch VS Code Differently
+Close VS Code completely, then:
+
+**On Windows:**
+- Open PowerShell
+- Type: `$env:ELECTRON_ENABLE_LOGGING = "true"; code .`
+- Press Enter
+
+**On Mac:**
+- Open Terminal
+- Type: `export ELECTRON_ENABLE_LOGGING=1 && code .`
+- Press Enter
+
+**On Linux:**
+- Open Terminal  
+- Type: `export ELECTRON_ENABLE_LOGGING=1 && code .`
+- Press Enter
+
+### Step 3: Start Logging
+- In VS Code, press **`Ctrl+Shift+B`** (or **`Cmd+Shift+B`** on Mac)
+- That's it! You'll see console logs appear in the terminal ✨
+
+**Where are my logs saved?** Check the `logs/console_capture.log` file in your workspace folder.
+
+---
+
 ## 🎯 What It Does
 
 VS Code extensions log messages to the Developer Tools Console (accessible via `F12` or `Help > Toggle Developer Tools`), but these messages disappear when you close the DevTools or restart VS Code. This tool continuously monitors and saves all console output to a timestamped log file.
@@ -15,7 +50,7 @@ VS Code extensions log messages to the Developer Tools Console (accessible via `
 - ✅ **Persistent logging** - Saved to file for later analysis
 - ✅ **Zero dependencies** - Uses only built-in shell scripts (PowerShell/Bash)
 - ✅ **Works with all extensions** - Captures output from any VS Code extension
-- ✅ **Integrated VS Code task** - Run with a single keyboard shortcut
+- ✅ **Integrated VS Code task** - Run with a single keyboard shortcut (`Ctrl+Shift+B`)
 
 ## 📋 Prerequisites
 
@@ -68,7 +103,11 @@ chmod +x .vscode/capture-devtools.sh
 
 ### 4. Start Capturing
 
-In VS Code:
+**Easiest Way (Recommended):**
+- Press **`Ctrl+Shift+B`** (or **`Cmd+Shift+B`** on macOS)
+- The logging task will start automatically! ✨
+
+**Alternative Way:**
 - Press `Ctrl+Shift+P` (or `Cmd+Shift+P` on macOS)
 - Type "Run Task"
 - Select:
